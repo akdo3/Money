@@ -1,0 +1,152 @@
+    :root{
+      --bg:#0f172a; --card:#0b1220; --muted:#94a3b8; --accent:#06b6d4; --danger:#ef4444;
+      --glass: rgba(255,255,255,0.03);
+      --radius: 12px;
+      --maxw: 1100px;
+      --font: "Segoe UI", "Helvetica Neue", Arial, sans-serif;
+    }
+    *{box-sizing:border-box}
+    html,body{height:100%}
+    body{
+      margin:0;
+      font-family:var(--font);
+      background: linear-gradient(180deg, #071128 0%, #071022 100%);
+      color:#e6eef8;
+      -webkit-font-smoothing:antialiased;
+      -moz-osx-font-smoothing:grayscale;
+      padding:20px;
+      display:flex;
+      justify-content:center;
+    }
+    .app {
+      width:100%;
+      max-width:var(--maxw);
+      border-radius:16px;
+      padding:18px;
+      background: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));
+      box-shadow: 0 6px 30px rgba(0,0,0,0.6);
+      min-height:80vh;
+      display:grid;
+      grid-template-columns: 300px 1fr;
+      gap:18px;
+    }
+
+    /* Sidebar */
+    .sidebar{
+      background:var(--card);
+      padding:14px;
+      border-radius:var(--radius);
+      display:flex;
+      flex-direction:column;
+      gap:12px;
+    }
+    .brand{display:flex;align-items:center;gap:10px}
+    .logo{
+      width:44px;height:44px;border-radius:10px;background:linear-gradient(135deg,var(--accent),#2563eb);display:flex;align-items:center;justify-content:center;font-weight:700;font-size:18px;
+      box-shadow: 0 4px 18px rgba(2,6,23,0.6);
+    }
+    .nav {display:flex;flex-direction:column;gap:6px;margin-top:6px}
+    .nav button{background:transparent;border:0;color:var(--muted);padding:10px;border-radius:8px;text-align:right;cursor:pointer;display:flex;justify-content:space-between;align-items:center}
+    .nav button.active{background:linear-gradient(90deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));color:#fff}
+    .small{font-size:12px;color:var(--muted)}
+    .card{background:var(--glass);padding:12px;border-radius:10px}
+    .quick-actions{display:flex;flex-direction:column;gap:8px}
+    .btn{background:var(--accent);border:0;padding:10px 12px;border-radius:10px;color:#022;cursor:pointer;font-weight:600}
+    .btn.ghost{background:transparent;border:1px solid rgba(255,255,255,0.04);color:var(--muted)}
+    .footer{margin-top:auto;font-size:12px;color:var(--muted)}
+
+    /* Main */
+    .main{display:flex;flex-direction:column;gap:12px}
+    .top-row{display:flex;gap:12px}
+    .top-row .stat{flex:1;padding:12px;border-radius:10px;background:linear-gradient(90deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));display:flex;flex-direction:column}
+    .stat .label{font-size:13px;color:var(--muted)}
+    .stat .value{font-size:22px;font-weight:700;margin-top:6px}
+
+    .grid-2{display:grid;grid-template-columns:1fr 420px;gap:12px}
+    .list{display:flex;flex-direction:column;gap:8px}
+    table{width:100%;border-collapse:collapse}
+    th,td{padding:8px;text-align:right;border-bottom:1px dashed rgba(255,255,255,0.02);font-size:13px}
+    th{color:var(--muted);font-size:12px}
+
+    /* Modal */
+    .modal-backdrop{position:fixed;inset:0;background:rgba(2,6,23,0.6);display:none;align-items:center;justify-content:center;z-index:99}
+    .modal{background:var(--card);padding:14px;border-radius:12px;width:560px;max-width:96%}
+    .modal.open{display:block}
+    .row{display:flex;gap:8px}
+    .col{flex:1}
+    input,textarea{width:100%;padding:8px;border-radius:8px;border:0;background:rgba(255,255,255,0.02);color:inherit}
+    /* ...existing code... */
+
+/* Dropdown / select - dark themed, custom caret and consistent padding */
+select {
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
+  width: 100%;
+  padding: 8px 36px 8px 8px; /* room for custom arrow */
+  border-radius: 8px;
+  border: 1px solid rgba(255,255,255,0.04);
+  background: linear-gradient(90deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));
+  color: inherit;
+  font-size: 13px;
+  cursor: pointer;
+  background-repeat: no-repeat;
+  background-position: right 10px center;
+  transition: box-shadow .12s ease, border-color .12s ease;
+  box-shadow: none;
+}
+
+/* custom caret (SVG) — stroke uses encoded color (#e6eef8) */
+select {
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='14' height='14' viewBox='0 0 24 24' stroke='%23e6eef8' stroke-width='2' fill='none' stroke-linecap='round' stroke-linejoin='round'><polyline points='6 9 12 15 18 9'/></svg>");
+}
+
+/* remove native IE dropdown arrow */
+select::-ms-expand { display: none; }
+
+/* Focus state */
+select:focus {
+  outline: none;
+  border-color: rgba(6,182,212,0.9);
+  box-shadow: 0 0 0 4px rgba(6,182,212,0.06);
+}
+
+/* Option appearance */
+option {
+  background: var(--card);
+  color: inherit;
+}
+
+/* Modal / compact selects (if you want smaller) */
+.modal select, .card select, input[type="search"] {
+  padding-right: 36px;
+}
+
+/* Disabled */
+select:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+/* ensure long select text wraps/ellipsis */
+select { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+
+    .muted{color:var(--muted);font-size:13px}
+
+    /* Responsive */
+    @media (max-width:1000px){
+      .app{grid-template-columns:1fr; padding:12px}
+      .grid-2{grid-template-columns:1fr}
+      .sidebar{flex-direction:row;overflow:auto;height:64px;padding:8px;align-items:center}
+      .nav{flex-direction:row}
+      .brand{display:none}
+    }
+    /* badges */
+    .badge{padding:6px 8px;border-radius:999px;background:rgba(255,255,255,0.03);font-size:12px}
+    .badge.danger{background:linear-gradient(90deg, rgba(239,68,68,0.12), rgba(239,68,68,0.08));color:#ffdddd}
+    .progress{height:10px;background:rgba(255,255,255,0.03);border-radius:999px;overflow:hidden}
+    .progress > i{display:block;height:100%;background:linear-gradient(90deg,var(--accent),#60a5fa);width:20%}
+    .table-actions{display:flex;gap:6px;justify-content:flex-end}
+    .link{color:var(--accent);cursor:pointer;text-decoration:underline}
+    .search{display:flex;gap:8px}
+    .search input{padding:8px;border-radius:8px;background:transparent;border:1px solid rgba(255,255,255,0.03);width:100%}
