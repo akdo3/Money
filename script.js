@@ -18,13 +18,13 @@
 
   // default settings if none
   async function ensureDefaultSettings(){
-    const s = await safeGet('', );
+    const s = await safeGet('settings', 1);
     if(!s){
       await db.settings.put({id:1, currency:'EGP', locale:'ar-EG', encrypt:false});
     }
   }
   ensureDefaultSettings();
-
+  
   /* ===========================
      Utility helpers
      =========================== */
@@ -40,21 +40,25 @@
   async function audit(action, note=''){
     await db.audit.add({action, note, timestamp: new Date().toISOString()});
   }
-
+  
   // validate DB keys: only positive integer IDs are considered valid keys for .get()
   function isValidId(k){
     if (k === undefined || k === null) return false;
     const n = Number(k);
     return Number.isInteger(n) && n > 0;
   }
-
+  
   // safe helper to avoid calling IDB .get with invalid/undefined keys
   async function safeGet(table, id){
+    // if table not supplied, assume settings
+    if (!table) table = 'settings';
+    // default settings id to 1 when asking for settings without id
+    if (table === 'settings' && (id === undefined || id === null)) id = 1;
     if (!isValidId(id)) return null;
     if (!db || !db[table]) return null;
-    try { return await db[table].get(Number(id)); } catch(e){ 
+    try { return await db[table].get(Number(id)); } catch(e){
       console.warn('safeGet error', table, id, e);
-      return null; 
+      return null;
     }
   }
   /* ===========================
