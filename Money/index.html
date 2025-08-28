@@ -1,245 +1,0 @@
-<!doctype html>
-<html lang="ar" dir="rtl">
-<head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>مدير المال — Offline Personal Finance</title>
-
-  <!-- PWA manifest -->
-  <link rel="manifest" href="manifest.json">
-  <meta name="theme-color" content="#0ea5a4" />
-
-  <!-- Basic styling (modern, responsive) -->
-  <link rel="stylesheet" href="style.css">
-</head>
-<body>
-  <div class="app" id="app">
-    <!-- SIDEBAR -->
-    <aside class="sidebar" aria-label="navigation">
-      <div class="brand">
-        <div class="logo">💰</div>
-        <div>
-          <div style="font-weight:700">مدير المال</div>
-          <div class="small">نسخة محلية - بدون خوادم</div>
-        </div>
-      </div>
-
-      <nav class="nav" id="nav">
-        <button data-view="dashboard" class="active">لوحة التحكم <span class="badge" id="badge-debts">0</span></button>
-        <button data-view="transactions">العمليات</button>
-        <button data-view="accounts">الحسابات</button>
-        <button data-view="categories">الفئات & الميزانيات</button>
-        <button data-view="debtors">المدينون</button>
-        <button data-view="goals">الأهداف</button>
-        <button data-view="reports">التقارير</button>
-        <button data-view="settings">الإعدادات</button>
-      </nav>
-
-      <div class="card quick-actions">
-        <div style="display:flex;gap:6px">
-          <button class="btn" id="quick-add-txn">إضافة عملية</button>
-          <button class="btn ghost" id="quick-add-debtor">إضافة مدين</button>
-        </div>
-        <div class="muted" style="margin-top:8px">إجراءات سريعة</div>
-      </div>
-
-      <div class="card">
-        <div class="small">النسخة الاحتياطية</div>
-        <div style="display:flex;gap:8px;margin-top:8px">
-          <button class="btn ghost" id="export-json">تصدير JSON</button>
-          <button class="btn ghost" id="import-json">استيراد</button>
-        </div>
-      </div>
-
-      <div class="footer">© مدير المال — Offline</div>
-    </aside>
-
-    <!-- MAIN -->
-    <main class="main" id="main">
-      <!-- Dashboard view (default) -->
-      <section id="view-dashboard">
-        <div class="top-row">
-          <div class="stat">
-            <div class="label">الرصيد الكلي</div>
-            <div class="value" id="total-balance">0</div>
-            <div class="muted">جمع أرصدة كل الحسابات</div>
-          </div>
-          <div class="stat">
-            <div class="label">المديونات المستحقة</div>
-            <div class="value" id="outstanding-debts">0</div>
-            <div class="muted">إجمالي مبالغ غير مسددة</div>
-          </div>
-          <div class="stat">
-            <div class="label">الإنفاق خلال 30 يومًا</div>
-            <div class="value" id="spend-30">0</div>
-            <div class="muted">ملخص سريع</div>
-          </div>
-        </div>
-
-        <div class="grid-2" style="margin-top:12px">
-          <div>
-            <div class="card">
-              <div style="display:flex;justify-content:space-between;align-items:center">
-                <strong>التدفق النقدي (آخر 12 شهرًا)</strong>
-                <div class="small">رؤية سريعة</div>
-              </div>
-              <canvas id="chart-flow" style="width:100%;height:200px;margin-top:8px"></canvas>
-            </div>
-
-            <div class="card" style="margin-top:12px">
-              <div style="display:flex;justify-content:space-between;align-items:center">
-                <strong>التنبيهات</strong>
-                <div class="small">عاجل</div>
-              </div>
-              <div id="alerts" style="margin-top:10px"></div>
-            </div>
-
-          </div>
-
-          <div>
-            <div class="card">
-              <div style="display:flex;justify-content:space-between;align-items:center">
-                <strong>الحسابات</strong>
-                <button class="btn ghost" id="open-accounts">عرض</button>
-              </div>
-              <div id="accounts-list" style="margin-top:10px"></div>
-            </div>
-
-            <div class="card" style="margin-top:12px">
-              <div style="display:flex;justify-content:space-between;align-items:center">
-                <strong>المدينون القريبون للاستحقاق</strong>
-                <div class="small">متابعة التحصيل</div>
-              </div>
-              <div id="debtors-widget" style="margin-top:10px"></div>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      <!-- TRANSACTIONS -->
-      <section id="view-transactions" style="display:none">
-        <div style="display:flex;justify-content:space-between;align-items:center">
-          <h3>العمليات</h3>
-          <div style="display:flex;gap:8px">
-            <input id="txn-search" placeholder="ابحث بالوصف أو الوسم" />
-            <button class="btn" id="add-transaction">إضافة</button>
-          </div>
-        </div>
-
-        <div class="card" style="margin-top:12px">
-          <table>
-            <thead><tr><th>التاريخ</th><th>الوصف</th><th>الفئة</th><th>الحساب</th><th>المبلغ</th><th></th></tr></thead>
-            <tbody id="txns-table-body"></tbody>
-          </table>
-        </div>
-      </section>
-
-      <!-- ACCOUNTS -->
-      <section id="view-accounts" style="display:none">
-        <div style="display:flex;justify-content:space-between;align-items:center">
-          <h3>الحسابات</h3>
-          <button class="btn" id="add-account">إضافة حساب</button>
-        </div>
-        <div class="card" style="margin-top:12px">
-          <table>
-            <thead><tr><th>الاسم</th><th>النوع</th><th>الرصيد</th><th></th></tr></thead>
-            <tbody id="accounts-table-body"></tbody>
-          </table>
-        </div>
-      </section>
-
-      <!-- CATEGORIES -->
-      <section id="view-categories" style="display:none">
-        <div style="display:flex;justify-content:space-between;align-items:center">
-          <h3>الفئات و الميزانيات</h3>
-          <button class="btn" id="add-category">إضافة فئة</button>
-        </div>
-        <div class="card" style="margin-top:12px">
-          <table>
-            <thead><tr><th>الفئة</th><th>ميزانية شهرية</th><th>استهلاك</th><th></th></tr></thead>
-            <tbody id="categories-table-body"></tbody>
-          </table>
-        </div>
-      </section>
-
-      <!-- DEBTORS -->
-      <section id="view-debtors" style="display:none">
-        <div style="display:flex;justify-content:space-between;align-items:center">
-          <h3>المدينون</h3>
-          <div style="display:flex;gap:8px">
-            <input id="debtor-search" placeholder="ابحث باسم المدين" />
-            <button class="btn" id="btn-add-debtor">إضافة مدين</button>
-          </div>
-        </div>
-        <div class="card" style="margin-top:12px">
-          <table>
-            <thead><tr><th>الاسم</th><th>مجموع الدين</th><th>مدفوع</th><th>المتبقي</th><th></th></tr></thead>
-            <tbody id="debtors-table-body"></tbody>
-          </table>
-        </div>
-      </section>
-
-      <!-- GOALS -->
-      <section id="view-goals" style="display:none">
-        <div style="display:flex;justify-content:space-between;align-items:center">
-          <h3>الأهداف الادخارية</h3>
-          <button class="btn" id="add-goal">إضافة هدف</button>
-        </div>
-        <div class="card" style="margin-top:12px">
-          <div id="goals-list"></div>
-        </div>
-      </section>
-
-      <!-- REPORTS -->
-      <section id="view-reports" style="display:none">
-        <h3>التقارير</h3>
-        <div class="card" style="margin-top:12px">
-          <div style="display:flex;justify-content:space-between;gap:8px">
-            <div>
-              <label>من: <input type="date" id="report-from" /></label>
-              <label>إلى: <input type="date" id="report-to" /></label>
-            </div>
-            <div style="display:flex;gap:8px">
-              <button class="btn" id="report-generate">عرض</button>
-              <button class="btn ghost" id="report-export-csv">تصدير CSV</button>
-            </div>
-          </div>
-          <div id="report-area" style="margin-top:12px"></div>
-        </div>
-      </section>
-
-      <!-- SETTINGS -->
-      <section id="view-settings" style="display:none">
-        <h3>الإعدادات</h3>
-        <div class="card" style="margin-top:12px">
-          <label>العملة الافتراضية: <input id="setting-currency" value="EGP" /></label>
-          <div style="margin-top:8px">
-            <label>تفعيل تشفير النسخ الاحتياطي: <input type="checkbox" id="setting-encrypt" /></label>
-          </div>
-          <div style="margin-top:8px;display:flex;gap:8px">
-            <button class="btn" id="btn-backup-now">إنشاء نسخة احتياطية مشفرة/عادية</button>
-            <button class="btn ghost" id="btn-restore">استعادة من ملف</button>
-          </div>
-        </div>
-      </section>
-    </main>
-  </div>
-
-  <!-- MODAL BACKDROP -->
-  <div class="modal-backdrop" id="modal-backdrop">
-    <div class="modal" id="modal">
-      <!-- modal content injected by JS -->
-    </div>
-  </div>
-
-  <!-- Toast / notification -->
-  <div id="toast" style="position:fixed;left:50%;bottom:28px;transform:translateX(-50%);background:var(--card);padding:10px 14px;border-radius:10px;display:none;z-index:200">تم</div>
-
-  <!-- Libraries -->
-  <script src="https://unpkg.com/dexie@3.2.2/dist/dexie.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
-
-  <!-- Main JS -->
-  <script src="script.js"></script>
-</body>
-</html>
