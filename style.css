@@ -1,4 +1,4 @@
-    :root{
+:root{
       --bg:#0f172a; --card:#0b1220; --muted:#94a3b8; --accent:#06b6d4; --danger:#ef4444;
       --glass: rgba(255,255,255,0.03);
       --radius: 12px;
@@ -150,3 +150,61 @@ select { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
     .link{color:var(--accent);cursor:pointer;text-decoration:underline}
     .search{display:flex;gap:8px}
     .search input{padding:8px;border-radius:8px;background:transparent;border:1px solid rgba(255,255,255,0.03);width:100%}
+
+    /* Mobile / small-screen improvements */
+@media (max-width: 600px) {
+  body{padding:12px}
+  .app{padding:12px; border-radius:12px; gap:10px; min-height:unset;}
+  .app { grid-template-columns: 1fr; }
+  .sidebar{flex-direction:row; align-items:center; height:64px; padding:8px; gap:8px; overflow:auto}
+  .nav{flex-direction:row; gap:6px}
+  .nav button{padding:10px 12px; font-size:14px; min-width:70px}
+  .brand{display:none}
+
+  .main{gap:10px}
+  .top-row{flex-direction:column}
+  .top-row .stat{padding:10px}
+  .stat .value{font-size:18px}
+
+  .grid-2{grid-template-columns:1fr; gap:10px}
+
+  /* make cards and inputs roomier for touch */
+  .card{padding:10px}
+  .btn{padding:12px 14px; font-size:15px}
+  .btn.ghost{padding:10px 12px}
+
+  /* tables become horizontally scrollable instead of squeezing */
+  .card > table, table { display:block; width:100%; overflow:auto; -webkit-overflow-scrolling:touch; }
+  th, td { white-space:nowrap; min-width:120px; padding:10px; text-align:right; font-size:14px; }
+
+  /* modal adapts to viewport */
+  .modal{width:96%; padding:12px; max-width:600px}
+  .modal .row{flex-direction:column}
+  .modal .col{width:100%}
+  input, textarea, select{font-size:15px; padding:10px}
+
+  /* canvas responsive */
+  canvas{width:100% !important; height:auto !important; max-height:300px}
+
+  /* improve badges and small text */
+  .badge{padding:6px 10px; font-size:13px}
+  .small{font-size:12px}
+  .muted{font-size:13px}
+
+  /* increase hit area for table actions */
+  .table-actions button{padding:8px 10px; font-size:13px}
+
+  /* sidebar quick actions stack on very small */
+  .sidebar .quick-actions{flex-direction:row; gap:6px}
+}
+
+/* Very small phones */
+@media (max-width: 420px) {
+  .nav button{font-size:13px; padding:8px 10px}
+  th, td { min-width:140px; font-size:13px; padding:10px 8px; }
+  .logo{width:36px;height:36px;font-size:16px}
+  .search input{min-width:80px}
+  .card{padding:8px}
+  .btn{width:100%;padding:10px 12px;font-size:15px}
+  .btn.ghost{padding:8px 10px}
+}
