@@ -913,3 +913,112 @@ async function exportReportCSV(){
 window.addEventListener('unhandledrejection', e=>{
   console.error('Unhandled rejection (global):', e.reason, e);
 });
+
+/* Add PWA install prompt handling + small mobile helpers */
+let deferredPrompt = null;
+window.addEventListener('beforeinstallprompt', (e) => {
+  e.preventDefault();
+  deferredPrompt = e;
+  const btn = $$('#btn-install');
+  if(btn) btn.style.display = 'inline-block';
+});
+
+const installBtn = $$('#btn-install');
+if(installBtn){
+  installBtn.addEventListener('click', async ()=>{
+    if(!deferredPrompt) return;
+    deferredPrompt.prompt();
+    const choice = await deferredPrompt.userChoice.catch(()=>({outcome:'dismissed'}));
+    deferredPrompt = null;
+    installBtn.style.display = 'none';
+    if(choice && choice.outcome === 'accepted') toast('تم تثبيت التطبيق');
+    else toast('تم إلغاء تثبيت التطبيق');
+  });
+}
+
+// responsive: add class to sidebar so CSS uses fixed bottom layout (already styled)
+function updateSidebarMobile(){
+  const sidebar = $$('#sidebar');
+  if(!sidebar) return;
+  if(window.innerWidth <= 600) sidebar.classList.add('mobile-bottom');
+  else sidebar.classList.remove('mobile-bottom');
+}
+window.addEventListener('resize', updateSidebarMobile);
+window.addEventListener('orientationchange', updateSidebarMobile);
+document.addEventListener('DOMContentLoaded', updateSidebarMobile);
+updateSidebarMobile();
+
+/* Enhance modal sizing on small screens (apply class when opened) */
+const modalEl = $$('#modal');
+const backdropEl = $$('#modal-backdrop');
+function adaptModalForMobile(modal){
+  if(!modal) return;
+  if(window.innerWidth <= 600) modal.classList.add('fullscreen');
+  else modal.classList.remove('fullscreen');
+  // make backdrop tappable to close
+  backdropEl.addEventListener('click', (ev)=>{
+    if(ev.target === backdropEl){
+      backdropEl.style.display='none';
+      modal.classList.remove('open');
+    }
+  }, {once:true});
+}
+
+/* Replace occurrences where modal is shown to adapt automatically.
+   Call adaptModalForMobile(modal) before adding open/display — existing modal open calls remain but this helper will be applied in key places.
+*/
+const originalOpenTxnModal = openTxnModal;
+openTxnModal = async function(txn=null){
+  const ret = await originalOpenTxnModal(txn);
+  adaptModalForMobile($$('#modal'));
+  return ret;
+};
+
+const originalOpenAccountModal = openAccountModal;
+openAccountModal = async function(acc=null){
+  const ret = await originalOpenAccountModal(acc);
+  adaptModalForMobile($$('#modal'));
+  return ret;
+};
+
+const originalOpenCategoryModal = openCategoryModal;
+openCategoryModal = async function(cat=null){
+  const ret = await originalOpenCategoryModal(cat);
+  adaptModalForMobile($$('#modal'));
+  return ret;
+};
+
+const originalOpenDebtorModal = openDebtorModal;
+openDebtorModal = async function(d=null){
+  const ret = await originalOpenDebtorModal(d);
+  adaptModalForMobile($$('#modal'));
+  return ret;
+};
+
+const originalOpenDebtorDetailModal = openDebtorDetailModal;
+openDebtorDetailModal = async function(id){
+  const ret = await originalOpenDebtorDetailModal(id);
+  adaptModalForMobile($$('#modal'));
+  return ret;
+};
+
+const originalOpenAddDebtModal = openAddDebtModal;
+openAddDebtModal = async function(id){
+  const ret = await originalOpenAddDebtModal(id);
+  adaptModalForMobile($$('#modal'));
+  return ret;
+};
+
+const originalOpenPaymentModal = openPaymentModal;
+openPaymentModal = async function(debtorId, debtItemId=null){
+  const ret = await originalOpenPaymentModal(debtorId, debtItemId);
+  adaptModalForMobile($$('#modal'));
+  return ret;
+};
+
+const originalOpenGoalModal = openGoalModal;
+openGoalModal = async function(g=null){
+  const ret = await originalOpenGoalModal(g);
+  adaptModalForMobile($$('#modal'));
+  return ret;
+};

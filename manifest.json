@@ -2,6 +2,7 @@
   "name": "مدير المال - Offline",
   "short_name": "مدير المال",
   "start_url": ".",
+  "scope": ".",
   "display": "standalone",
   "background_color": "#071128",
   "theme_color": "#0ea5a4",
@@ -12,5 +13,9 @@
       "sizes": "64x64",
       "type": "image/svg+xml"
     }
+  ],
+  "shortcuts": [
+    { "name": "إضافة عملية", "short_name":"إضافة", "url": "/?quick=txn" },
+    { "name": "المدينون", "short_name":"مدينون", "url": "/?view=debtors" }
   ]
 }

@@ -2,12 +2,18 @@
 <html lang="ar" dir="rtl">
 <head>
   <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
   <title>مدير المال — Offline Personal Finance</title>
 
   <!-- PWA manifest -->
   <link rel="manifest" href="manifest.json">
   <meta name="theme-color" content="#0ea5a4" />
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-title" content="مدير المال">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <link rel="icon" href="manifest-icon.png">
+  <link rel="apple-touch-icon" href="manifest-icon.png">
 
   <!-- Basic styling (modern, responsive) -->
   <link rel="stylesheet" href="style.css">
@@ -15,7 +21,7 @@
 <body>
   <div class="app" id="app">
     <!-- SIDEBAR -->
-    <aside class="sidebar" aria-label="navigation">
+    <aside class="sidebar" aria-label="navigation" id="sidebar">
       <div class="brand">
         <div class="logo">💰</div>
         <div>
@@ -36,9 +42,11 @@
       </nav>
 
       <div class="card quick-actions">
-        <div style="display:flex;gap:6px">
+        <div style="display:flex;gap:6px;flex-wrap:wrap">
           <button class="btn" id="quick-add-txn">إضافة عملية</button>
           <button class="btn ghost" id="quick-add-debtor">إضافة مدين</button>
+          <!-- install button (hidden by default, shown when beforeinstallprompt fires) -->
+          <button class="btn ghost" id="btn-install" style="display:none">تثبيت التطبيق</button>
         </div>
         <div class="muted" style="margin-top:8px">إجراءات سريعة</div>
       </div>

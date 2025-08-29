@@ -151,52 +151,45 @@ select { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
     .search{display:flex;gap:8px}
     .search input{padding:8px;border-radius:8px;background:transparent;border:1px solid rgba(255,255,255,0.03);width:100%}
 
-    /* Mobile / small-screen improvements */
+    /* Mobile / small-screen improvements (enhanced) */
 @media (max-width: 600px) {
   body{padding:12px}
   .app{padding:12px; border-radius:12px; gap:10px; min-height:unset;}
   .app { grid-template-columns: 1fr; }
-  .sidebar{flex-direction:row; align-items:center; height:64px; padding:8px; gap:8px; overflow:auto}
-  .nav{flex-direction:row; gap:6px}
-  .nav button{padding:10px 12px; font-size:14px; min-width:70px}
-  .brand{display:none}
-
-  .main{gap:10px}
-  .top-row{flex-direction:column}
-  .top-row .stat{padding:10px}
-  .stat .value{font-size:18px}
-
-  .grid-2{grid-template-columns:1fr; gap:10px}
-
-  /* make cards and inputs roomier for touch */
-  .card{padding:10px}
-  .btn{padding:12px 14px; font-size:15px}
-  .btn.ghost{padding:10px 12px}
-
-  /* tables become horizontally scrollable instead of squeezing */
+  /* convert sidebar to a compact bottom bar when space is narrow */
+  .sidebar{
+    position:fixed;
+    left:12px;
+    right:12px;
+    bottom:12px;
+    height:64px;
+    padding:8px;
+    border-radius:12px;
+    display:flex;
+    align-items:center;
+    gap:8px;
+    z-index:120;
+    background: linear-gradient(180deg, rgba(11,18,32,0.92), rgba(11,18,32,0.9));
+    box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+  }
+  .sidebar .brand{display:none}
+  .nav{flex-direction:row; gap:6px; overflow:auto; -webkit-overflow-scrolling:touch; width:100%}
+  .nav button{flex:0 0 auto; display:flex;flex-direction:column;align-items:center;padding:8px 10px; min-width:68px; justify-content:center; border-radius:10px}
+  .nav button .badge{display:block;margin-top:4px}
+  .quick-actions{display:flex;gap:6px;align-items:center}
+  #btn-install{display:block} /* show install CTA on mobile when enabled by JS */
+  /* make modal take most of viewport */
+  .modal{max-height:86vh; overflow:auto}
+  .modal.fullscreen{width:96%; height:86vh; border-radius:12px}
   .card > table, table { display:block; width:100%; overflow:auto; -webkit-overflow-scrolling:touch; }
   th, td { white-space:nowrap; min-width:120px; padding:10px; text-align:right; font-size:14px; }
-
-  /* modal adapts to viewport */
-  .modal{width:96%; padding:12px; max-width:600px}
-  .modal .row{flex-direction:column}
-  .modal .col{width:100%}
-  input, textarea, select{font-size:15px; padding:10px}
-
-  /* canvas responsive */
-  canvas{width:100% !important; height:auto !important; max-height:300px}
-
-  /* improve badges and small text */
-  .badge{padding:6px 10px; font-size:13px}
-  .small{font-size:12px}
-  .muted{font-size:13px}
-
-  /* increase hit area for table actions */
-  .table-actions button{padding:8px 10px; font-size:13px}
-
-  /* sidebar quick actions stack on very small */
-  .sidebar .quick-actions{flex-direction:row; gap:6px}
 }
+
+/* ensure touch targets are comfortable */
+.nav button, .btn, .btn.ghost { touch-action:manipulation; -webkit-tap-highlight-color: rgba(0,0,0,0.15); }
+
+/* keep canvas responsive */
+canvas{width:100% !important; height:auto !important; max-height:320px}
 
 /* Very small phones */
 @media (max-width: 420px) {

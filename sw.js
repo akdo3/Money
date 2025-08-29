@@ -4,6 +4,9 @@ const FILES = [
   './',
   './index.html',
   './manifest.json',
+  './style.css',
+  './script.js',
+  './manifest-icon.png',
   'https://unpkg.com/dexie@3.2.2/dist/dexie.min.js',
   'https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js'
 ];
@@ -15,7 +18,6 @@ self.addEventListener('install', event => {
       // attempt to add files but ignore failures per-item
       for (const f of FILES) {
         try {
-          // only fetch http/https (and relative) resources
           const url = new URL(f, self.location.href);
           if (url.protocol === 'http:' || url.protocol === 'https:') {
             const res = await fetch(url.href, {cache: 'no-cache'});
@@ -25,6 +27,11 @@ self.addEventListener('install', event => {
           // ignore individual file caching errors
         }
       }
+      // keep a minimal navigation fallback - store index.html as fallback
+      try {
+        const fallback = await fetch('./index.html', {cache: 'no-cache'});
+        if (fallback && fallback.ok) await cache.put(self.registration.scope, fallback.clone());
+      } catch(e){}
     } catch (e) {
       // ignore global install errors
     }
@@ -40,28 +47,38 @@ self.addEventListener('fetch', event => {
   const req = event.request;
   if (req.method !== 'GET') return;
 
-  // ignore non-http(s) requests and data: / chrome-extension: etc.
   let url;
   try { url = new URL(req.url); } catch (e) { return; }
   if (url.protocol !== 'http:' && url.protocol !== 'https:') return;
 
   event.respondWith((async () => {
     const cache = await caches.open(CACHE_NAME);
+    // navigation requests -> try network, fallback to cached index
+    if (req.mode === 'navigate') {
+      try {
+        const networkResp = await fetch(req);
+        if (networkResp && networkResp.ok) {
+          cache.put(req, networkResp.clone()).catch(()=>{});
+          return networkResp;
+        }
+      } catch (e) {
+        const cachedIndex = await cache.match('./index.html') || await cache.match('/');
+        if (cachedIndex) return cachedIndex;
+        return Response.error();
+      }
+    }
+
     const cached = await cache.match(req);
     if (cached) return cached;
     try {
       const res = await fetch(req);
-      // only cache same-origin && ok responses to avoid unsupported schemes/errors
       try {
         if (res && res.ok && new URL(req.url).origin === self.location.origin) {
           await cache.put(req, res.clone());
         }
-      } catch (e) {
-        // ignore cache.put errors
-      }
+      } catch (e) {}
       return res;
     } catch (e) {
-      // fallback to root cached page if available
       return (await cache.match('./')) || (await cache.match('/')) || Response.error();
     }
   })());
